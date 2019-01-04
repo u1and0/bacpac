@@ -1,0 +1,19 @@
+#compdef bacpac
+# bacpac zsh completion
+
+# ____________________________
+# Maintainer: u1and0<e01.ando60@gmail.com>
+# Update: -
+# Create: 2019-01-04
+# -------------------
+
+_bacpac() {
+  _values -w\
+    'mode' \
+    'init[Initializes bacpac for the first time]' \
+    'backup[Backs up current packages and configuration]' \
+    'list[List backed up packages in packages.list]' \
+    'diff[Show diff of backup packages and now packages]' \
+    'restore[Restores packages and configuration]' \
+    'update[Update bacpac to the latest version]'
+}

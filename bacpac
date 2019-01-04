@@ -15,14 +15,16 @@
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 bacpac-usage() {
-  echo 'bacpac version 0.1.1'
+  echo 'bacpac version 0.2.0'
   echo 'Copyright (c) 2015 David Bailey <robocoder.db@gmail.com>'
   echo
-  echo "usage: $0 init|backup|restore|update|clean"
+  echo "usage: $0 init|backup|list|diff|restore|update|clean"
   echo "   or: $0 help"
   echo
   echo 'init:    Initializes bacpac for the first time'
   echo 'backup:  Backs up current packages and configuration'
+  echo 'list:    List backed up packages in packages.list'
+  echo 'diff:    Show diff between backup packages and now packages'
   echo 'restore: Restores packages and configuration'
   echo 'update:  Update bacpac to the latest version'
   echo 'clean:   Deletes temporary directory'
@@ -89,6 +91,17 @@ bacpac-backup() {
     echo "No modifications to '$1' since last backup"
   fi
   echo
+}
+
+bacpac-list() {
+    cat $(dirname $0)/packages.list
+}
+
+bacpac-diff() {
+    [[ $(type colordiff) ]] &&
+        diff_command="$(which colordiff) -u" ||
+        diff_command="$(which diff) -u"
+    ${diff_command} $(dirname $0)/packages.list <(pacman -Qqe)
 }
 
 bacpac-restore() {
@@ -245,6 +258,10 @@ elif [[ "$1" == backup ]]; then
   bacpac-backup 'packages.list'
   bacpac-backup 'mirrorlist'
   bacpac-backup 'pacman.conf'
+elif [[ "$1" == list ]]; then
+  bacpac-list
+elif [[ "$1" == diff ]]; then
+  bacpac-diff
 elif [[ "$1" == restore ]]; then
   bacpac-setup
   bacpac-restore 'mirrorlist' '/etc/pacman.d/mirrorlist'
